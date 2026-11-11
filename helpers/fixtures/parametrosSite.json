@@ -1,0 +1,15 @@
+{
+    "opcoes": {
+        "nome_site": "iGamingSite",
+        "valor_min_deposito_cliente": 10,
+        "payment_methods": {
+            "alphapay": { "enabled": true, "default": true },
+            "onebank": { "enabled": false, "default": false }
+        },
+        "available_payment_methods": ["alphapay"],
+        "allow_new_registrations": true,
+        "allow_new_deposits": true,
+        "allow_new_withdrawal_requests": true,
+        "use_bank_account": true
+    }
+}

@@ -1,0 +1,20 @@
+# Dependências
+node_modules/
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+
+# Variáveis de ambiente (use .env.example como modelo)
+.env
+.env.*
+!.env.example
+
+# Ferramentas locais de IA/automação do autor (não fazem parte da suíte)
+.claude/
+.clauderc
+.mcp.json
+mcp-server.js

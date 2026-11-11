@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: 'Suíte contra o ambiente (requer acesso ao pre-prod)'
+        type: choice
+        options: [nenhuma, api, e2e, mobile, completa]
+        default: nenhuma
+
+jobs:
+  qualidade:
+    name: Typecheck + testes unitários
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run test:unit
+
+  ambiente:
+    name: Suíte contra o ambiente (${{ inputs.suite }})
+    needs: qualidade
+    if: github.event_name == 'workflow_dispatch' && inputs.suite != 'nenhuma'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      BASE_URL: ${{ vars.BASE_URL }}
+      PLAYER_API_URL: ${{ vars.PLAYER_API_URL }}
+      BACKOFFICE_API_URL: ${{ vars.BACKOFFICE_API_URL }}
+      QA_SENHA_PADRAO: ${{ secrets.QA_SENHA_PADRAO }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps
+        if: inputs.suite != 'api'
+      - name: Executar suíte
+        run: |
+          case "${{ inputs.suite }}" in
+            api)      npm run test:api ;;
+            e2e)      npm run test:e2e ;;
+            mobile)   npm run test:mobile ;;
+            completa) npm test ;;
+          esac
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14

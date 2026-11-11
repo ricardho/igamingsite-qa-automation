@@ -1,0 +1,25 @@
+{
+  "name": "igamingsite-qa-automation",
+  "version": "1.0.0",
+  "description": "Suíte de testes automatizados (Playwright + TypeScript) — Web, Mobile e API",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "test:e2e": "playwright test --project=chromium --project=firefox --project=webkit",
+    "test:mobile": "playwright test --project=\"Mobile Chrome\" --project=\"Mobile Safari\"",
+    "test:api": "playwright test --project=api",
+    "test:unit": "playwright test --project=unit",
+    "test:smoke": "playwright test --project=api --grep @smoke-preprod",
+    "test:happy": "playwright test --grep @happyPath",
+    "test:report": "playwright show-report",
+    "typecheck": "tsc --noEmit"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@faker-js/faker": "^10.5.0",
+    "@playwright/test": "^1.61.1",
+    "@types/node": "^26.1.1",
+    "typescript": "^7.0.2"
+  }
+}
